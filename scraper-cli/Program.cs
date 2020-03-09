@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace scraper_cli
 {
@@ -10,7 +11,21 @@ namespace scraper_cli
             "Get raw page content",
             "Parse with active rules",
             "Create parsing rule",
+            "Import rules",
+            "Export rules",
             "Exit"
+        };
+
+        public static string[] RuleExportOptions =
+        {
+            "Export to JSON",
+            "Cancel (or any other key)"
+        };
+
+        public static string[] RuleImportOptions =
+        {
+            "Import from JSON",
+            "Cancel (or any other key)"
         };
 
         public static List<ParsingRule> ParsingRules = new List<ParsingRule>();
@@ -75,9 +90,39 @@ namespace scraper_cli
                         string description = Console.ReadLine();
 
                         ParsingRules.Add(new ParsingRule(prefix, sufffix, title, description));
+                        Console.WriteLine("===== Rule saved! =====");
                         break;
 
                     case "4":
+                        ShowOptions(RuleImportOptions);
+                        switch (Console.ReadLine())
+                        {
+                            case "1":
+                                Console.Write("Please specify file path: ");
+                                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                ParsingRules = new List<ParsingRule>(FileService.ImportFromJson<ParsingRule[]>(path));
+                                Console.WriteLine("===== Successfully loaded =====");
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+
+                    case "5":
+                        ShowOptions(RuleExportOptions);
+                        switch(Console.ReadLine())
+                        {
+                            case "1":
+                                Console.Write("Please specify file path: ");
+                                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                FileService.ExportRulesToJson(ParsingRules.ToArray(), path);
+                                Console.WriteLine("===== Successfully saved =====");
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case "6":
                         isWorking = false;
                         break;
 

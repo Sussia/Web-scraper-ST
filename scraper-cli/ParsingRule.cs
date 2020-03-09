@@ -15,5 +15,10 @@ namespace scraper_cli
             this.title = title;
             this.description = description;
         }
+
+        public override string ToString()
+        {
+            return $"Title: {title}\nDescription: {description}\nPrefix: {prefix}\nSuffix: {suffix}";
+        }
     }
 }
