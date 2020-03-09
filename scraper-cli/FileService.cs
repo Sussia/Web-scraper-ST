@@ -18,5 +18,10 @@ namespace scraper_cli
             T Tobject = JsonConvert.DeserializeObject<T>(jsonString);
             return Tobject;
         }
+
+        internal static void ExportRawContent(string content, string path)
+        {
+            File.WriteAllText(path, content);
+        }
     }
 }

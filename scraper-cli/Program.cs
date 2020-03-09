@@ -28,6 +28,13 @@ namespace scraper_cli
             "Cancel (or any other key)"
         };
 
+        public static string[] RawContentOptions =
+        {
+            "Export to file",
+            "Write to console",
+            "Cancel (or any other key)"
+        };
+
         public static List<ParsingRule> ParsingRules = new List<ParsingRule>();
 
         public static void Main(string[] args)
@@ -44,14 +51,35 @@ namespace scraper_cli
                 switch (Console.ReadLine())
                 {
                     case "1":
-
                         Console.WriteLine("Input URL:");
                         url = Console.ReadLine();
+                        response = RequestService.SendRequest(url);
+                        if (response == null)
+                        {
+                            Console.WriteLine("Couldn't get response");
+                        }
+                        else
+                        {
+                            ShowOptions(RawContentOptions);
+                            switch (Console.ReadLine())
+                            {
+                                case "1":
+                                    Console.Write("Please specify file path: ");
+                                    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                    FileService.ExportRawContent(response, path);
+                                    Console.WriteLine("===== Successfully saved =====");
+                                    break;
 
-                        response = RequestService.SendRequest(url) ?? "Couldn't get response";
-                        Console.WriteLine("----------------Start of the page---------------");
-                        Console.WriteLine(response);
-                        Console.WriteLine("-----------------End of the page----------------");
+                                case "2":
+                                    Console.WriteLine("----------------Start of the page---------------");
+                                    Console.WriteLine(response);
+                                    Console.WriteLine("-----------------End of the page----------------");
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
 
                         break;
 
