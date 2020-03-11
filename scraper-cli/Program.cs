@@ -43,6 +43,13 @@ namespace scraper_cli
             "Cancel (or any other key)"
         };
 
+        public static string[] UrlsInputOptions =
+        {
+            "Import from JSON",
+            "Read from console",
+            "Cancel (or any other key)"
+        };
+
         public static List<ParsingRule> ParsingRules = new List<ParsingRule>();
 
         public static void Main(string[] args)
@@ -75,7 +82,8 @@ namespace scraper_cli
                                     Console.Write("Please specify file path: ");
                                     path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
                                     FileService.ExportRawContent(response, path);
-                                    Console.WriteLine("===== Successfully saved =====");
+                                    Console.Clear();
+                                    Console.WriteLine("===== Successfully saved =====\n");
                                     break;
 
                                 case "2":
@@ -92,12 +100,30 @@ namespace scraper_cli
                         break;
 
                     case "2":
-                        Console.WriteLine("Input URLs (empty to end):");
-                        List<string> urls = new List<string>();
-                        while ((url = Console.ReadLine()) != "")
+                        ShowOptions(UrlsInputOptions);
+                        string input = Console.ReadLine();
+                        if (input != "1" && input != "2")
                         {
-                            urls.Add(url);
+                            break;
                         }
+                        List<string> urls;
+                        switch (input)
+                        {
+                            case "1":
+                                Console.Write("Please specify file path: ");
+                                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                urls = new List<string>(FileService.ImportFromJson<string[]>(path));
+                                break;
+                            default:
+                                urls = new List<string>();
+                                Console.WriteLine("Input URLs (empty to end):");
+                                while ((url = Console.ReadLine()) != "")
+                                {
+                                    urls.Add(url);
+                                }
+                                break;
+                        }
+
                         List<Dictionary<string, string>> scrapedValuesList = new List<Dictionary<string, string>>();
                         foreach (string item in urls)
                         {
@@ -131,13 +157,15 @@ namespace scraper_cli
                                 Console.Write("Please specify file path: ");
                                 path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
                                 FileService.ExportToCsv(scrapedValuesList, path);
-                                Console.WriteLine("===== Successfully saved =====");
+                                Console.Clear();
+                                Console.WriteLine("===== Successfully saved =====\n");
                                 break;
                             case "3":
                                 Console.Write("Please specify file path: ");
                                 path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
                                 FileService.ExportToJson(scrapedValuesList, path);
-                                Console.WriteLine("===== Successfully saved =====");
+                                Console.Clear();
+                                Console.WriteLine("===== Successfully saved =====\n");
                                 break;
                             default:
                                 break;
@@ -160,7 +188,8 @@ namespace scraper_cli
                         string description = Console.ReadLine();
 
                         ParsingRules.Add(new ParsingRule(prefix, sufffix, title, description));
-                        Console.WriteLine("===== Rule saved! =====");
+                        Console.Clear();
+                        Console.WriteLine("===== Rule saved! =====\n");
                         break;
 
                     case "4":
@@ -171,7 +200,8 @@ namespace scraper_cli
                                 Console.Write("Please specify file path: ");
                                 path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
                                 ParsingRules = new List<ParsingRule>(FileService.ImportFromJson<ParsingRule[]>(path));
-                                Console.WriteLine("===== Successfully loaded =====");
+                                Console.Clear();
+                                Console.WriteLine("===== Successfully loaded =====\n");
                                 break;
                             default:
                                 break;
@@ -186,7 +216,8 @@ namespace scraper_cli
                                 Console.Write("Please specify file path: ");
                                 path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
                                 FileService.ExportToJson(ParsingRules.ToArray(), path);
-                                Console.WriteLine("===== Successfully saved =====");
+                                Console.Clear();
+                                Console.WriteLine("===== Successfully saved =====\n");
                                 break;
                             default:
                                 break;
@@ -234,6 +265,7 @@ namespace scraper_cli
             {
                 Console.WriteLine($"{i + 1}. {options[i]}");
             }
+            Console.Write("> ");
         }
     }
 }
