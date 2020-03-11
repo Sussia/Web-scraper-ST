@@ -35,6 +35,14 @@ namespace scraper_cli
             "Cancel (or any other key)"
         };
 
+        public static string[] ScrapedValuesOptions =
+        {
+            "Write to console",
+            "Export to csv",
+            "Export to JSON",
+            "Cancel (or any other key)"
+        };
+
         public static List<ParsingRule> ParsingRules = new List<ParsingRule>();
 
         public static void Main(string[] args)
@@ -92,10 +100,27 @@ namespace scraper_cli
                         if (response != null)
                         {
                             Dictionary<string, string> scrapedValues = ParsePage(response, ParsingRules);
-                            Console.WriteLine("Scraped values:");
-                            foreach (var item in scrapedValues)
+                            ShowOptions(ScrapedValuesOptions);
+                            switch(Console.ReadLine())
                             {
-                                Console.WriteLine($"{item.Key}: {item.Value}");
+                                case "1":
+                                    Console.WriteLine("Scraped values:");
+                                    foreach (var item in scrapedValues)
+                                    {
+                                        Console.WriteLine($"{item.Key}: {item.Value}");
+                                    }
+                                    break;
+                                case "2":
+                                    Console.WriteLine("Not implemented");
+                                    break;
+                                case "3":
+                                    Console.Write("Please specify file path: ");
+                                    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                    FileService.ExportToJson(scrapedValues, path);
+                                    Console.WriteLine("===== Successfully saved =====");
+                                    break;
+                                default:
+                                    break;
                             }
                         } else
                         {
@@ -143,7 +168,7 @@ namespace scraper_cli
                             case "1":
                                 Console.Write("Please specify file path: ");
                                 string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
-                                FileService.ExportRulesToJson(ParsingRules.ToArray(), path);
+                                FileService.ExportToJson(ParsingRules.ToArray(), path);
                                 Console.WriteLine("===== Successfully saved =====");
                                 break;
                             default:

@@ -6,7 +6,7 @@ namespace scraper_cli
 {
     public static class FileService
     {
-        public static void ExportRulesToJson (ParsingRule[] parsingRules, string path)
+        public static void ExportToJson(object parsingRules, string path)
         {
             string jsonString = JsonConvert.SerializeObject(parsingRules);
             File.WriteAllText(path, jsonString);
