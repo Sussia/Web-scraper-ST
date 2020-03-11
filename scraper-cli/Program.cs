@@ -92,40 +92,54 @@ namespace scraper_cli
                         break;
 
                     case "2":
-                        Console.WriteLine("Input URL:");
-                        url = Console.ReadLine();
-
-                        response = RequestService.SendRequest(url);
-
-                        if (response != null)
+                        Console.WriteLine("Input URLs (empty to end):");
+                        List<string> urls = new List<string>();
+                        while ((url = Console.ReadLine()) != "")
                         {
-                            Dictionary<string, string> scrapedValues = ParsePage(response, ParsingRules);
-                            ShowOptions(ScrapedValuesOptions);
-                            switch(Console.ReadLine())
-                            {
-                                case "1":
-                                    Console.WriteLine("Scraped values:");
-                                    foreach (var item in scrapedValues)
-                                    {
-                                        Console.WriteLine($"{item.Key}: {item.Value}");
-                                    }
-                                    break;
-                                case "2":
-                                    Console.WriteLine("Not implemented");
-                                    break;
-                                case "3":
-                                    Console.Write("Please specify file path: ");
-                                    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
-                                    FileService.ExportToJson(scrapedValues, path);
-                                    Console.WriteLine("===== Successfully saved =====");
-                                    break;
-                                default:
-                                    break;
-                            }
-                        } else
-                        {
-                            Console.WriteLine("Couldn't get response");
+                            urls.Add(url);
                         }
+                        List<Dictionary<string, string>> scrapedValuesList = new List<Dictionary<string, string>>();
+                        foreach (string item in urls)
+                        {
+                            Dictionary<string, string> scrapedValues = ProcessURL(item);
+                            if (scrapedValues != null)
+                            {
+                                scrapedValuesList.Add(scrapedValues);
+                            }
+                        }
+
+                        ShowOptions(ScrapedValuesOptions);
+                        switch (Console.ReadLine())
+                        {
+                            case "1":
+                                Console.WriteLine("Scraped values:");
+                                foreach (var item in ParsingRules)
+                                {
+                                    Console.Write($"{item.title}                  | ");
+                                }
+                                Console.WriteLine();
+                                foreach (var item in scrapedValuesList)
+                                {
+                                    foreach (var field in item)
+                                    {
+                                        Console.Write($"{field.Value} | ");
+                                    }
+                                    Console.WriteLine();
+                                }
+                                break;
+                            case "2":
+                                Console.WriteLine("Not implemented");
+                                break;
+                            case "3":
+                                Console.Write("Please specify file path: ");
+                                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                FileService.ExportToJson(scrapedValuesList, path);
+                                Console.WriteLine("===== Successfully saved =====");
+                                break;
+                            default:
+                                break;
+                        }
+
                         Console.WriteLine();
                         break;
 
@@ -163,7 +177,7 @@ namespace scraper_cli
 
                     case "5":
                         ShowOptions(RuleExportOptions);
-                        switch(Console.ReadLine())
+                        switch (Console.ReadLine())
                         {
                             case "1":
                                 Console.Write("Please specify file path: ");
@@ -184,6 +198,12 @@ namespace scraper_cli
                         break;
                 }
             }
+        }
+
+        private static Dictionary<string, string> ProcessURL(string url)
+        {
+            string response = RequestService.SendRequest(url);
+            return response != null ? ParsePage(response, ParsingRules) : null;
         }
 
         private static Dictionary<string, string> ParsePage(string pageContent, List<ParsingRule> parsingRules)
