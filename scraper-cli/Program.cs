@@ -49,7 +49,7 @@ namespace scraper_cli
         {
             Console.WriteLine("Welcome to web scraper!");
 
-            string url, response;
+            string url, response, path;
 
             bool isWorking = true;
 
@@ -73,7 +73,7 @@ namespace scraper_cli
                             {
                                 case "1":
                                     Console.Write("Please specify file path: ");
-                                    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                    path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
                                     FileService.ExportRawContent(response, path);
                                     Console.WriteLine("===== Successfully saved =====");
                                     break;
@@ -128,11 +128,14 @@ namespace scraper_cli
                                 }
                                 break;
                             case "2":
-                                Console.WriteLine("Not implemented");
+                                Console.Write("Please specify file path: ");
+                                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                FileService.ExportToCsv(scrapedValuesList, path);
+                                Console.WriteLine("===== Successfully saved =====");
                                 break;
                             case "3":
                                 Console.Write("Please specify file path: ");
-                                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
                                 FileService.ExportToJson(scrapedValuesList, path);
                                 Console.WriteLine("===== Successfully saved =====");
                                 break;
@@ -166,7 +169,7 @@ namespace scraper_cli
                         {
                             case "1":
                                 Console.Write("Please specify file path: ");
-                                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
                                 ParsingRules = new List<ParsingRule>(FileService.ImportFromJson<ParsingRule[]>(path));
                                 Console.WriteLine("===== Successfully loaded =====");
                                 break;
@@ -181,7 +184,7 @@ namespace scraper_cli
                         {
                             case "1":
                                 Console.Write("Please specify file path: ");
-                                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
                                 FileService.ExportToJson(ParsingRules.ToArray(), path);
                                 Console.WriteLine("===== Successfully saved =====");
                                 break;

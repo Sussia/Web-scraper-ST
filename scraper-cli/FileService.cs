@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace scraper_cli
@@ -22,6 +25,20 @@ namespace scraper_cli
         internal static void ExportRawContent(string content, string path)
         {
             File.WriteAllText(path, content);
+        }
+
+        internal static void ExportToCsv(List<Dictionary<string, string>> scrapedValuesList, string path)
+        {
+            StringBuilder sb = new StringBuilder();
+            //Headers
+            sb.AppendJoin(';', scrapedValuesList[0].Keys.ToArray());
+
+            foreach (var scrapedValues in scrapedValuesList)
+            {
+                sb.Append('\n');
+                sb.AppendJoin(';', scrapedValues.Values.ToArray());
+            }
+            File.WriteAllText(path, sb.ToString(),Encoding.UTF8);
         }
     }
 }
