@@ -13,6 +13,7 @@ namespace scraper_cli
             "Create parsing rule",
             "Import rules",
             "Export rules",
+            "Display rules",
             "Exit"
         };
 
@@ -223,7 +224,16 @@ namespace scraper_cli
                                 break;
                         }
                         break;
+
                     case "6":
+                        Console.WriteLine("Active rules:");
+                        foreach (var item in ParsingRules)
+                        {
+                            Console.WriteLine($"Title: {item.title}\nDescription: {item.description}\n");
+                        }
+                        break;
+
+                    case "7":
                         isWorking = false;
                         break;
 
