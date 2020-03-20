@@ -10,6 +10,12 @@ namespace scraper_cli
         {
             "Get raw page content",
             "Parse with active rules",
+            "Parsing rules management",
+            "Exit"
+        };
+
+        public static string[] RuleManagementOptions =
+        {
             "Create parsing rule",
             "Import rules",
             "Export rules",
@@ -17,7 +23,6 @@ namespace scraper_cli
             "Display specific rule",
             "Edit rule",
             "Delete rule",
-            "Exit"
         };
 
         public static string[] RuleExportOptions =
@@ -181,127 +186,135 @@ namespace scraper_cli
                         break;
 
                     case "3":
-                        Console.Write("Enter title: ");
-                        string title = Console.ReadLine();
+                        ShowOptions(RuleManagementOptions);
+                        switch (Console.ReadLine())
+                        {
+                            case "1":
+                                Console.Write("Enter title: ");
+                                string title = Console.ReadLine();
 
-                        Console.Write("Enter prefix: ");
-                        string prefix = Console.ReadLine();
+                                Console.Write("Enter prefix: ");
+                                string prefix = Console.ReadLine();
 
-                        Console.Write("Enter suffix: ");
-                        string sufffix = Console.ReadLine();
+                                Console.Write("Enter suffix: ");
+                                string sufffix = Console.ReadLine();
 
-                        Console.Write("Enter description: ");
-                        string description = Console.ReadLine();
+                                Console.Write("Enter description: ");
+                                string description = Console.ReadLine();
 
-                        ParsingRules.Add(new ParsingRule(prefix, sufffix, title, description));
-                        Console.Clear();
-                        Console.WriteLine("===== Rule saved! =====\n");
+                                ParsingRules.Add(new ParsingRule(prefix, sufffix, title, description));
+                                Console.Clear();
+                                Console.WriteLine("===== Rule saved! =====\n");
+                                break;
+
+                            case "2":
+                                ShowOptions(RuleImportOptions);
+                                switch (Console.ReadLine())
+                                {
+                                    case "1":
+                                        Console.Write("Please specify file path: ");
+                                        path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                        ParsingRules = new List<ParsingRule>(FileService.ImportFromJson<ParsingRule[]>(path));
+                                        Console.Clear();
+                                        Console.WriteLine("===== Successfully loaded =====\n");
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+
+                            case "3":
+                                ShowOptions(RuleExportOptions);
+                                switch (Console.ReadLine())
+                                {
+                                    case "1":
+                                        Console.Write("Please specify file path: ");
+                                        path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
+                                        FileService.ExportToJson(ParsingRules.ToArray(), path);
+                                        Console.Clear();
+                                        Console.WriteLine("===== Successfully saved =====\n");
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+
+                            case "4":
+                                Console.WriteLine("Active rules:\n");
+                                foreach (var item in ParsingRules)
+                                {
+                                    Console.WriteLine($"Title: {item.title}\nDescription: {item.description}\n");
+                                }
+                                break;
+
+                            case "5":
+                                Console.Write("Enter rule title: ");
+                                ruleTitle = Console.ReadLine();
+                                rule = ParsingRules.Find(rule => rule.title == ruleTitle);
+                                if (rule != null)
+                                {
+                                    Console.WriteLine($"\n{rule}\n");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Rule not found\n");
+                                }
+                                break;
+
+                            case "6":
+                                Console.Write("Enter rule title: ");
+                                ruleTitle = Console.ReadLine();
+                                rule = ParsingRules.Find(rule => rule.title == ruleTitle);
+                                if (rule != null)
+                                {
+                                    Console.Write("Enter title: ");
+                                    string titleE = Console.ReadLine();
+                                    titleE = titleE == "" ? rule.title : titleE;
+
+                                    Console.Write("Enter prefix: ");
+                                    string prefixE = Console.ReadLine();
+                                    prefixE = prefixE == "" ? rule.prefix : prefixE;
+
+                                    Console.Write("Enter suffix: ");
+                                    string sufffixE = Console.ReadLine();
+                                    sufffixE = sufffixE == "" ? rule.suffix : sufffixE;
+
+                                    Console.Write("Enter description: ");
+                                    string descriptionE = Console.ReadLine();
+                                    descriptionE = descriptionE == "" ? rule.description : descriptionE;
+
+                                    ParsingRules.Remove(rule);
+                                    ParsingRules.Add(new ParsingRule(prefixE, sufffixE, titleE, descriptionE));
+                                    Console.Clear();
+                                    Console.WriteLine("===== Rule saved! =====\n");
+                                    break;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Rule not found\n");
+                                }
+                                break;
+
+                            case "7":
+                                Console.Write("Enter rule title: ");
+                                ruleTitle = Console.ReadLine();
+                                rule = ParsingRules.Find(rule => rule.title == ruleTitle);
+                                if (rule != null)
+                                {
+                                    ParsingRules.Remove(rule);
+                                    Console.Clear();
+                                    Console.WriteLine("===== Rule deleted =====\n");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Rule not found\n");
+                                }
+                                break;
+
+                        }
                         break;
 
                     case "4":
-                        ShowOptions(RuleImportOptions);
-                        switch (Console.ReadLine())
-                        {
-                            case "1":
-                                Console.Write("Please specify file path: ");
-                                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
-                                ParsingRules = new List<ParsingRule>(FileService.ImportFromJson<ParsingRule[]>(path));
-                                Console.Clear();
-                                Console.WriteLine("===== Successfully loaded =====\n");
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-
-                    case "5":
-                        ShowOptions(RuleExportOptions);
-                        switch (Console.ReadLine())
-                        {
-                            case "1":
-                                Console.Write("Please specify file path: ");
-                                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Console.ReadLine());
-                                FileService.ExportToJson(ParsingRules.ToArray(), path);
-                                Console.Clear();
-                                Console.WriteLine("===== Successfully saved =====\n");
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-
-                    case "6":
-                        Console.WriteLine("Active rules:\n");
-                        foreach (var item in ParsingRules)
-                        {
-                            Console.WriteLine($"Title: {item.title}\nDescription: {item.description}\n");
-                        }
-                        break;
-
-                    case "7":
-                        Console.Write("Enter rule title: ");
-                        ruleTitle = Console.ReadLine();
-                        rule = ParsingRules.Find(rule => rule.title == ruleTitle);
-                        if (rule != null)
-                        {
-                            Console.WriteLine($"\n{rule}\n");
-                        } else
-                        {
-                            Console.WriteLine("Rule not found\n");
-                        }
-                        break;
-
-                    case "8":
-                        Console.Write("Enter rule title: ");
-                        ruleTitle = Console.ReadLine();
-                        rule = ParsingRules.Find(rule => rule.title == ruleTitle);
-                        if (rule != null)
-                        {
-                            Console.Write("Enter title: ");
-                            string titleE = Console.ReadLine();
-                            titleE = titleE == "" ? rule.title : titleE;
-
-                            Console.Write("Enter prefix: ");
-                            string prefixE = Console.ReadLine();
-                            prefixE = prefixE == "" ? rule.prefix : prefixE;
-
-                            Console.Write("Enter suffix: ");
-                            string sufffixE = Console.ReadLine();
-                            sufffixE = sufffixE == "" ? rule.suffix : sufffixE;
-
-                            Console.Write("Enter description: ");
-                            string descriptionE = Console.ReadLine();
-                            descriptionE = descriptionE == "" ? rule.description : descriptionE;
-
-                            ParsingRules.Remove(rule);
-                            ParsingRules.Add(new ParsingRule(prefixE, sufffixE, titleE, descriptionE));
-                            Console.Clear();
-                            Console.WriteLine("===== Rule saved! =====\n");
-                            break;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Rule not found\n");
-                        }
-                        break;
-
-                    case "9":
-                        Console.Write("Enter rule title: ");
-                        ruleTitle = Console.ReadLine();
-                        rule = ParsingRules.Find(rule => rule.title == ruleTitle);
-                        if (rule != null)
-                        {
-                            ParsingRules.Remove(rule);
-                            Console.Clear();
-                            Console.WriteLine("===== Rule deleted =====/n");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Rule not found\n");
-                        }
-                        break;
-
-                    case "10":
                         isWorking = false;
                         break;
 
