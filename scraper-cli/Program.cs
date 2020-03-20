@@ -15,6 +15,8 @@ namespace scraper_cli
             "Export rules",
             "Display rules",
             "Display specific rule",
+            "Edit rule",
+            "Delete rule",
             "Exit"
         };
 
@@ -58,7 +60,9 @@ namespace scraper_cli
         {
             Console.WriteLine("Welcome to web scraper!");
 
-            string url, response, path;
+            string url, response, path, ruleTitle;
+
+            ParsingRule rule;
 
             bool isWorking = true;
 
@@ -236,8 +240,8 @@ namespace scraper_cli
 
                     case "7":
                         Console.Write("Enter rule title: ");
-                        string ruleTitle = Console.ReadLine();
-                        var rule = ParsingRules.Find(rule => rule.title == ruleTitle);
+                        ruleTitle = Console.ReadLine();
+                        rule = ParsingRules.Find(rule => rule.title == ruleTitle);
                         if (rule != null)
                         {
                             Console.WriteLine($"\n{rule}\n");
@@ -248,6 +252,43 @@ namespace scraper_cli
                         break;
 
                     case "8":
+                        Console.Write("Enter rule title: ");
+                        ruleTitle = Console.ReadLine();
+                        rule = ParsingRules.Find(rule => rule.title == ruleTitle);
+                        if (rule != null)
+                        {
+                            Console.Write("Enter title: ");
+                            string titleE = Console.ReadLine();
+                            titleE = titleE == "" ? rule.title : titleE;
+
+                            Console.Write("Enter prefix: ");
+                            string prefixE = Console.ReadLine();
+                            prefixE = prefixE == "" ? rule.prefix : prefixE;
+
+                            Console.Write("Enter suffix: ");
+                            string sufffixE = Console.ReadLine();
+                            sufffixE = sufffixE == "" ? rule.suffix : sufffixE;
+
+                            Console.Write("Enter description: ");
+                            string descriptionE = Console.ReadLine();
+                            descriptionE = descriptionE == "" ? rule.description : descriptionE;
+
+                            ParsingRules.Remove(rule);
+                            ParsingRules.Add(new ParsingRule(prefixE, sufffixE, titleE, descriptionE));
+                            Console.Clear();
+                            Console.WriteLine("===== Rule saved! =====\n");
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Rule not found\n");
+                        }
+                        break;
+
+                    case "9":
+                        break;
+
+                    case "10":
                         isWorking = false;
                         break;
 
