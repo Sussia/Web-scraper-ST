@@ -286,6 +286,19 @@ namespace scraper_cli
                         break;
 
                     case "9":
+                        Console.Write("Enter rule title: ");
+                        ruleTitle = Console.ReadLine();
+                        rule = ParsingRules.Find(rule => rule.title == ruleTitle);
+                        if (rule != null)
+                        {
+                            ParsingRules.Remove(rule);
+                            Console.Clear();
+                            Console.WriteLine("===== Rule deleted =====/n");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Rule not found\n");
+                        }
                         break;
 
                     case "10":
