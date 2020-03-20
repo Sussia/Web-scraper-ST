@@ -14,6 +14,7 @@ namespace scraper_cli
             "Import rules",
             "Export rules",
             "Display rules",
+            "Display specific rule",
             "Exit"
         };
 
@@ -226,7 +227,7 @@ namespace scraper_cli
                         break;
 
                     case "6":
-                        Console.WriteLine("Active rules:");
+                        Console.WriteLine("Active rules:\n");
                         foreach (var item in ParsingRules)
                         {
                             Console.WriteLine($"Title: {item.title}\nDescription: {item.description}\n");
@@ -234,6 +235,19 @@ namespace scraper_cli
                         break;
 
                     case "7":
+                        Console.Write("Enter rule title: ");
+                        string ruleTitle = Console.ReadLine();
+                        var rule = ParsingRules.Find(rule => rule.title == ruleTitle);
+                        if (rule != null)
+                        {
+                            Console.WriteLine($"\n{rule}\n");
+                        } else
+                        {
+                            Console.WriteLine("Rule not found\n");
+                        }
+                        break;
+
+                    case "8":
                         isWorking = false;
                         break;
 
