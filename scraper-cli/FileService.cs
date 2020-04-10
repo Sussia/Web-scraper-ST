@@ -9,10 +9,10 @@ namespace scraper_cli
 {
     public static class FileService
     {
-        public static void ExportToJson(object parsingRules, string path)
+        public static string ExportToJson(object parsingRules, string path)
         {
             string jsonString = JsonConvert.SerializeObject(parsingRules);
-            File.WriteAllText(path, jsonString);
+            return SaveToFile(jsonString, path);
         }
 
         public static T ImportFromJson<T>(string path)
@@ -22,13 +22,15 @@ namespace scraper_cli
             return Tobject;
         }
 
-        internal static void ExportRawContent(string content, string path)
+        public static void ExportRawContent(string content, string path)
         {
-            File.WriteAllText(path, content);
+            SaveToFile(content, path);
         }
 
-        internal static void ExportToCsv(List<Dictionary<string, string>> scrapedValuesList, string path)
+        public static string ExportToCsv(List<Dictionary<string, string>> scrapedValuesList, string path)
         {
+            if (scrapedValuesList.Count == 0) return "Error: list is empty";
+
             StringBuilder sb = new StringBuilder();
             //Headers
             sb.AppendJoin(';', scrapedValuesList[0].Keys.ToArray());
@@ -38,7 +40,28 @@ namespace scraper_cli
                 sb.Append('\n');
                 sb.AppendJoin(';', scrapedValues.Values.ToArray());
             }
-            File.WriteAllText(path, sb.ToString(),Encoding.UTF8);
+            return SaveToFile(sb.ToString(), path);
+        }
+
+        private static string SaveToFile(string data, string path)
+        {
+            try
+            {
+                File.WriteAllText(path, data, Encoding.UTF8);
+                return "Successfuly saved!";
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return "Error: directory not found";
+            }
+            catch (IOException)
+            {
+                return "Error: can't access the file";
+            }
+            catch (Exception ex)
+            {
+                return $"Unexpected error: {ex.Message}";
+            }
         }
     }
 }
