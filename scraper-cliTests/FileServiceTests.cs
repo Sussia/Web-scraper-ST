@@ -15,7 +15,7 @@ namespace scraper_cliTests
         public void ExportToJsonTests()
         {
             string validPath = Path.Combine(homeDirectory, "Desktop/test.json");
-            string status = FileService.ExportToJson(new ParsingRule("", "", ""), validPath);
+            string status = new FileService().ExportToJson(new ParsingRule("", "", ""), validPath);
             Assert.AreEqual("Successfuly saved!", status);
             File.Delete(validPath);
         }
@@ -25,7 +25,7 @@ namespace scraper_cliTests
         {
             string validPath = Path.Combine(homeDirectory, "Desktop/test.json");
             FileStream fs = File.OpenWrite(validPath);
-            string status = FileService.ExportToJson(new ParsingRule("", "", ""), validPath);
+            string status = new FileService().ExportToJson(new ParsingRule("", "", ""), validPath);
             Assert.AreEqual("Error: can't access the file", status);
             fs.Close();
             File.Delete(validPath);
@@ -35,14 +35,14 @@ namespace scraper_cliTests
         public void ExportToJsonDirNotFoundExTest()
         {
             string validPath = Path.Combine(homeDirectory, "Fesktop/test.json");
-            string status = FileService.ExportToJson(new ParsingRule("", "", ""), validPath);
+            string status = new FileService().ExportToJson(new ParsingRule("", "", ""), validPath);
             Assert.AreEqual("Error: directory not found", status);
         }
 
         [TestMethod]
         public void ExportToJsonUnexpectedExTest()
         {
-            string status = FileService.ExportToJson(new ParsingRule("", "", ""), null);
+            string status = new FileService().ExportToJson(new ParsingRule("", "", ""), null);
             string expectedStatus = "Unexpected error:";
             Assert.AreEqual(expectedStatus, status.Substring(0, expectedStatus.Length));
         }
@@ -56,7 +56,7 @@ namespace scraper_cliTests
                 {"Test key", "Test value"}
             };
             var list = new List<Dictionary<string, string>> { testDict };
-            string status = FileService.ExportToCsv(list, validPath);
+            string status = new FileService().ExportToCsv(list, validPath);
             Assert.AreEqual("Successfuly saved!", status);
             File.Delete(validPath);
         }
@@ -66,7 +66,7 @@ namespace scraper_cliTests
         {
             string validPath = Path.Combine(homeDirectory, "Desktop/test.csv");
             var list = new List<Dictionary<string, string>>();
-            string status = FileService.ExportToCsv(list, validPath);
+            string status = new FileService().ExportToCsv(list, validPath);
             Assert.AreEqual("Error: list is empty", status);
         }
     }

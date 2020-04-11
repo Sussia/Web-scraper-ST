@@ -7,27 +7,27 @@ using Newtonsoft.Json;
 
 namespace scraper_cli
 {
-    public static class FileService
+    public class FileService
     {
-        public static string ExportToJson(object parsingRules, string path)
+        public virtual string ExportToJson(object parsingRules, string path)
         {
             string jsonString = JsonConvert.SerializeObject(parsingRules);
             return SaveToFile(jsonString, path);
         }
 
-        public static T ImportFromJson<T>(string path)
+        public virtual T ImportFromJson<T>(string path)
         {
             string jsonString = File.ReadAllText(path);
             T Tobject = JsonConvert.DeserializeObject<T>(jsonString);
             return Tobject;
         }
 
-        public static void ExportRawContent(string content, string path)
+        public virtual void ExportRawContent(string content, string path)
         {
             SaveToFile(content, path);
         }
 
-        public static string ExportToCsv(List<Dictionary<string, string>> scrapedValuesList, string path)
+        public virtual string ExportToCsv(List<Dictionary<string, string>> scrapedValuesList, string path)
         {
             if (scrapedValuesList.Count == 0) return "Error: list is empty";
 
@@ -43,7 +43,7 @@ namespace scraper_cli
             return SaveToFile(sb.ToString(), path);
         }
 
-        private static string SaveToFile(string data, string path)
+        private string SaveToFile(string data, string path)
         {
             try
             {

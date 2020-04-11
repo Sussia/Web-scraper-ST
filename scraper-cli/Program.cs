@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿
 
 namespace scraper_cli
 {
@@ -8,7 +6,7 @@ namespace scraper_cli
     {
         public static void Main(string[] args)
         {
-            WebScraper ws = new WebScraper(new MyConsole(), new RequestService());
+            WebScraper ws = new WebScraper(new MyConsole(), new RequestService(), new FileService());
             ws.Start();
         }
     }

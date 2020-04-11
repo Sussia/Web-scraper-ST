@@ -8,14 +8,16 @@ namespace scraper_cli
     {
         private IConsole myConsole;
         private RequestService requestService;
+        private FileService fileService;
 
         public List<ParsingRule> ParsingRules;
 
-        public WebScraper(IConsole myConsole, RequestService requestService)
+        public WebScraper(IConsole myConsole, RequestService requestService, FileService fileService)
         {
             this.myConsole = myConsole;
             ParsingRules = new List<ParsingRule>();
             this.requestService = requestService;
+            this.fileService = fileService;
         }
 
         public WebScraper()
@@ -23,6 +25,7 @@ namespace scraper_cli
             myConsole = new MyConsole();
             ParsingRules = new List<ParsingRule>();
             requestService = new RequestService();
+            fileService = new FileService();
         }
 
         public int Start()
@@ -57,7 +60,7 @@ namespace scraper_cli
                                 case "1":
                                     myConsole.Write("Please specify file path: ");
                                     path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
-                                    FileService.ExportRawContent(response, path);
+                                    fileService.ExportRawContent(response, path);
                                     myConsole.Clear();
                                     myConsole.WriteLine("===== Successfully saved =====\n");
                                     break;
@@ -85,7 +88,7 @@ namespace scraper_cli
                             case "1":
                                 myConsole.Write("Please specify file path: ");
                                 path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
-                                urls = new List<string>(FileService.ImportFromJson<string[]>(path));
+                                urls = new List<string>(fileService.ImportFromJson<string[]>(path));
                                 break;
                             default:
                                 urls = new List<string>();
@@ -129,14 +132,14 @@ namespace scraper_cli
                             case "2":
                                 myConsole.Write("Please specify file path: ");
                                 path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
-                                FileService.ExportToCsv(scrapedValuesList, path);
+                                fileService.ExportToCsv(scrapedValuesList, path);
                                 myConsole.Clear();
                                 myConsole.WriteLine("===== Successfully saved =====\n");
                                 break;
                             case "3":
                                 myConsole.Write("Please specify file path: ");
                                 path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
-                                string status = FileService.ExportToJson(scrapedValuesList, path);
+                                string status = fileService.ExportToJson(scrapedValuesList, path);
                                 myConsole.Clear();
                                 myConsole.WriteLine($"===== {status} =====\n");
                                 break;
@@ -176,7 +179,7 @@ namespace scraper_cli
                                     case "1":
                                         myConsole.Write("Please specify file path: ");
                                         path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
-                                        ParsingRules = new List<ParsingRule>(FileService.ImportFromJson<ParsingRule[]>(path));
+                                        ParsingRules = new List<ParsingRule>(fileService.ImportFromJson<ParsingRule[]>(path));
                                         myConsole.Clear();
                                         myConsole.WriteLine("===== Successfully loaded =====\n");
                                         break;
@@ -192,7 +195,7 @@ namespace scraper_cli
                                     case "1":
                                         myConsole.Write("Please specify file path: ");
                                         path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
-                                        string status = FileService.ExportToJson(ParsingRules.ToArray(), path);
+                                        string status = fileService.ExportToJson(ParsingRules.ToArray(), path);
                                         myConsole.Clear();
                                         myConsole.WriteLine($"===== {status} =====\n");
                                         break;

@@ -49,7 +49,12 @@ namespace scraper_cliTests
             var requestServiceMock = new Mock<RequestService>();
             requestServiceMock.Setup(x => x.SendRequest("http://example.com"))
                 .Returns("<html><title>Example Domain</title></html>");
-            WebScraper webScraper = new WebScraper(consoleMok.Object, requestServiceMock.Object);
+
+            var fileServiceMock = new Mock<FileService>();
+            fileServiceMock.Setup(x => x.ExportToCsv(It.IsAny<List<Dictionary<string, string>>>(), files["Scraped values"]))
+                .Returns("Successfuly saved!");
+
+            WebScraper webScraper = new WebScraper(consoleMok.Object, requestServiceMock.Object, fileServiceMock.Object);
 
             //Check that program exits correctly
             Assert.AreEqual(0, webScraper.Start());
@@ -58,7 +63,6 @@ namespace scraper_cliTests
             var parsingRule = new ParsingRule("<title>", "</title>", "Title", "Title of the page");
             Assert.AreEqual(1, webScraper.ParsingRules.Count);
             Assert.AreEqual(parsingRule, webScraper.ParsingRules[0]);
-            File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), files["Scraped values"]));
         }
     }
 }
