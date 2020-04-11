@@ -7,19 +7,22 @@ namespace scraper_cli
     public class WebScraper
     {
         private IConsole myConsole;
+        private RequestService requestService;
 
         public List<ParsingRule> ParsingRules;
 
-        public WebScraper(IConsole myConsole)
+        public WebScraper(IConsole myConsole, RequestService requestService)
         {
             this.myConsole = myConsole;
             ParsingRules = new List<ParsingRule>();
+            this.requestService = requestService;
         }
 
         public WebScraper()
         {
             myConsole = new MyConsole();
             ParsingRules = new List<ParsingRule>();
+            requestService = new RequestService();
         }
 
         public int Start()
@@ -41,7 +44,7 @@ namespace scraper_cli
                     case "1":
                         myConsole.WriteLine("Input URL:");
                         url = myConsole.ReadLine();
-                        response = RequestService.SendRequest(url);
+                        response = requestService.SendRequest(url);
                         if (response.StartsWith("Error"))
                         {
                             myConsole.WriteLine(response);
@@ -287,7 +290,7 @@ namespace scraper_cli
 
         public Dictionary<string, string> ProcessURL(string url)
         {
-            string response = RequestService.SendRequest(url);
+            string response = requestService.SendRequest(url);
             return response.StartsWith("Error") ? null : ParsePage(response, ParsingRules);
         }
 

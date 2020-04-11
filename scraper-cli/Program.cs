@@ -8,7 +8,7 @@ namespace scraper_cli
     {
         public static void Main(string[] args)
         {
-            WebScraper ws = new WebScraper(new MyConsole());
+            WebScraper ws = new WebScraper(new MyConsole(), new RequestService());
             ws.Start();
         }
     }

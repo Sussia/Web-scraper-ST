@@ -4,10 +4,10 @@ using System.Net;
 
 namespace scraper_cli
 {
-    public static class RequestService
+    public class RequestService
     {
 
-        public static string SendRequest(string url)
+        public virtual string SendRequest(string url)
         {
             try
             {
