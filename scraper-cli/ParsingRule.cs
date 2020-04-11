@@ -16,6 +16,20 @@ namespace scraper_cli
             this.description = description;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is ParsingRule rule &&
+                   prefix == rule.prefix &&
+                   suffix == rule.suffix &&
+                   title == rule.title &&
+                   description == rule.description;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(prefix, suffix, title, description);
+        }
+
         public override string ToString()
         {
             return $"Title: {title}\nDescription: {description}\nPrefix: {prefix}\nSuffix: {suffix}";
