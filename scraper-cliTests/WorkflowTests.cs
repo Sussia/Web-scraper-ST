@@ -14,6 +14,7 @@ namespace scraper_cliTests
         {
             {"Rules", "Desktop/test_rules.json"},
             {"Scraped values", "Desktop/test_result.csv"},
+            {"Scraped values json", "Desktop/test_result.json"},
             {"Links", "Desktop/test_links.json"},
             {"Raw page", "Desktop/test_raw_page.txt"}
         };
@@ -63,6 +64,59 @@ namespace scraper_cliTests
             var parsingRule = new ParsingRule("<title>", "</title>", "Title", "Title of the page");
             Assert.AreEqual(1, webScraper.ParsingRules.Count);
             Assert.AreEqual(parsingRule, webScraper.ParsingRules[0]);
+        }
+
+        [TestMethod]
+        public void ImportRules_ExportRules_DeleteRule_ImportLinks_SaveToJson_Test()
+        {
+            var consoleMok = new Mock<MyConsole>();
+            consoleMok.SetupSequence(c => c.ReadLine())
+                .Returns("3")                           //Option "Rule management"
+                .Returns("2")                           //Option "Import rule"
+                .Returns("1")                           //Option "Import from json"
+                .Returns(files["Rules"])                //  File path to load rules
+                .Returns("3")                           //Option "Rule management
+                .Returns("3")                           //Option "Export Rules"
+                .Returns("1")                           //Option "Export to json"
+                .Returns(files["Rules"])                // File path to save rules
+                .Returns("3")                           //Option "Rule management"
+                .Returns("7")                           //Option "Delete rule"
+                .Returns("Title")                       // Name of the rule to delete
+                .Returns("2")                           //Option "Parse page"
+                .Returns("1")                           //Option "Import link from file"
+                .Returns(files["Links"])                //  File path to load links
+                .Returns("3")                           //Option "Export to json"
+                .Returns(files["Scraped values json"])  // File path to save results
+                .Returns("4");                          //Option "Exit"
+
+            var requestServiceMock = new Mock<RequestService>();
+            requestServiceMock.Setup(x => x.SendRequest("http://example.com"))
+                .Returns("<html><title>Example Domain</title></html>");
+
+            var rulesList = new List<ParsingRule>
+            {
+                new ParsingRule("t", "t", "Test"),
+                new ParsingRule("t2", "t2", "Title")
+            };
+
+            var urlsList = new List<string>
+            {
+                "http://example.com"
+            };
+
+            var fileServiceMock = new Mock<FileService>();
+            fileServiceMock.Setup(x => x.ExportToJson(It.IsAny<List<Dictionary<string, string>>>(), files["Scraped values json"]))
+                .Returns("Successfuly saved!");
+            fileServiceMock.Setup(x => x.ExportToJson(It.IsAny<ParsingRule[]>(), files["Rules"]))
+                .Returns("Successfuly saved!");
+            fileServiceMock.Setup(x => x.ImportFromJson<ParsingRule[]>(files["Rules"]))
+                .Returns(rulesList.ToArray());
+            fileServiceMock.Setup(x => x.ImportFromJson<string[]>(files["Links"]))
+                .Returns(urlsList.ToArray());
+
+            WebScraper webScraper = new WebScraper(consoleMok.Object, requestServiceMock.Object, fileServiceMock.Object);
+
+            Assert.AreEqual(0, webScraper.Start());
         }
     }
 }
