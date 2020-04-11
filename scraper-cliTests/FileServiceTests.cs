@@ -69,5 +69,32 @@ namespace scraper_cliTests
             string status = new FileService().ExportToCsv(list, validPath);
             Assert.AreEqual("Error: list is empty", status);
         }
+
+        [TestMethod]
+        public void ImportfromJsonTest()
+        {
+            var fs = new FileService();
+            var expectedRule = new ParsingRule("a", "a", "a");
+            string validPath = Path.Combine(homeDirectory, "Desktop/import_test.json");
+            fs.ExportToJson(expectedRule, validPath);
+
+            var rule = fs.ImportFromJson<ParsingRule>(validPath);
+
+            Assert.AreEqual(expectedRule, rule);
+
+            File.Delete(validPath);
+        }
+
+        [TestMethod]
+        public void ImportfromJsonExTest()
+        {
+            var fs = new FileService();
+            string validPath = Path.Combine(homeDirectory, "Fesktop/import_test.json");
+
+            var rule = fs.ImportFromJson<ParsingRule>(validPath);
+
+            Assert.AreEqual(default(ParsingRule), rule);
+
+        }
     }
 }
