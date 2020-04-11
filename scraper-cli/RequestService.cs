@@ -17,10 +17,17 @@ namespace scraper_cli
                 stream.Close();
                 return response;
             }
+            catch (WebException)
+            {
+                return $"Error: can't access resourse: {url}";
+            }
+            catch (UriFormatException)
+            {
+                return $"Error: can't parse url: {url}";
+            }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return null;
+                return $"Unexpected error: {ex.Message}";
             }
         }
     }

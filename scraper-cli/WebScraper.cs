@@ -42,9 +42,9 @@ namespace scraper_cli
                         myConsole.WriteLine("Input URL:");
                         url = myConsole.ReadLine();
                         response = RequestService.SendRequest(url);
-                        if (response == null)
+                        if (response.StartsWith("Error"))
                         {
-                            myConsole.WriteLine("Couldn't get response");
+                            myConsole.WriteLine(response);
                         }
                         else
                         {
@@ -288,7 +288,7 @@ namespace scraper_cli
         public Dictionary<string, string> ProcessURL(string url)
         {
             string response = RequestService.SendRequest(url);
-            return response != null ? ParsePage(response, ParsingRules) : null;
+            return response.StartsWith("Error") ? null : ParsePage(response, ParsingRules);
         }
 
         public Dictionary<string, string> ParsePage(string pageContent, List<ParsingRule> parsingRules)
