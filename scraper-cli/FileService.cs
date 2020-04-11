@@ -17,9 +17,17 @@ namespace scraper_cli
 
         public virtual T ImportFromJson<T>(string path)
         {
-            string jsonString = File.ReadAllText(path);
-            T Tobject = JsonConvert.DeserializeObject<T>(jsonString);
-            return Tobject;
+            try
+            {
+                string jsonString = File.ReadAllText(path);
+                T Tobject = JsonConvert.DeserializeObject<T>(jsonString);
+                return Tobject;
+            }
+            catch (Exception)
+            {
+                return default(T);
+            }
+
         }
 
         public virtual void ExportRawContent(string content, string path)

@@ -88,7 +88,17 @@ namespace scraper_cli
                             case "1":
                                 myConsole.Write("Please specify file path: ");
                                 path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
-                                urls = new List<string>(fileService.ImportFromJson<string[]>(path));
+                                var urlTmpList = fileService.ImportFromJson<string[]>(path);
+                                if (urlTmpList != default(string[]))
+                                {
+                                    urls = new List<string>(urlTmpList);
+                                }
+                                else
+                                {
+                                    urls = new List<string>();
+                                    myConsole.Clear();
+                                    myConsole.WriteLine("===== Error occurs while loading =====\n");
+                                }
                                 break;
                             default:
                                 urls = new List<string>();
@@ -99,55 +109,57 @@ namespace scraper_cli
                                 }
                                 break;
                         }
-
-                        List<Dictionary<string, string>> scrapedValuesList = new List<Dictionary<string, string>>();
-                        foreach (string item in urls)
+                        if (urls.Count > 0)
                         {
-                            Dictionary<string, string> scrapedValues = ProcessURL(item);
-                            if (scrapedValues != null)
+                            List<Dictionary<string, string>> scrapedValuesList = new List<Dictionary<string, string>>();
+                            foreach (string item in urls)
                             {
-                                scrapedValuesList.Add(scrapedValues);
-                            }
-                        }
-
-                        ShowOptions(MenuOptions.ScrapedValues);
-                        switch (myConsole.ReadLine())
-                        {
-                            case "1":
-                                myConsole.WriteLine("Scraped values:");
-                                foreach (var item in ParsingRules)
+                                Dictionary<string, string> scrapedValues = ProcessURL(item);
+                                if (scrapedValues != null)
                                 {
-                                    myConsole.Write($"{item.title}                  | ");
+                                    scrapedValuesList.Add(scrapedValues);
                                 }
-                                myConsole.WriteLine();
-                                foreach (var item in scrapedValuesList)
-                                {
-                                    foreach (var field in item)
+                            }
+
+                            ShowOptions(MenuOptions.ScrapedValues);
+                            switch (myConsole.ReadLine())
+                            {
+                                case "1":
+                                    myConsole.WriteLine("Scraped values:");
+                                    foreach (var item in ParsingRules)
                                     {
-                                        myConsole.Write($"{field.Value} | ");
+                                        myConsole.Write($"{item.title}                  | ");
                                     }
                                     myConsole.WriteLine();
-                                }
-                                break;
-                            case "2":
-                                myConsole.Write("Please specify file path: ");
-                                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
-                                fileService.ExportToCsv(scrapedValuesList, path);
-                                myConsole.Clear();
-                                myConsole.WriteLine("===== Successfully saved =====\n");
-                                break;
-                            case "3":
-                                myConsole.Write("Please specify file path: ");
-                                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
-                                string status = fileService.ExportToJson(scrapedValuesList, path);
-                                myConsole.Clear();
-                                myConsole.WriteLine($"===== {status} =====\n");
-                                break;
-                            default:
-                                break;
-                        }
+                                    foreach (var item in scrapedValuesList)
+                                    {
+                                        foreach (var field in item)
+                                        {
+                                            myConsole.Write($"{field.Value} | ");
+                                        }
+                                        myConsole.WriteLine();
+                                    }
+                                    break;
+                                case "2":
+                                    myConsole.Write("Please specify file path: ");
+                                    path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
+                                    fileService.ExportToCsv(scrapedValuesList, path);
+                                    myConsole.Clear();
+                                    myConsole.WriteLine("===== Successfully saved =====\n");
+                                    break;
+                                case "3":
+                                    myConsole.Write("Please specify file path: ");
+                                    path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
+                                    string status = fileService.ExportToJson(scrapedValuesList, path);
+                                    myConsole.Clear();
+                                    myConsole.WriteLine($"===== {status} =====\n");
+                                    break;
+                                default:
+                                    break;
+                            }
 
-                        myConsole.WriteLine();
+                            myConsole.WriteLine();
+                        }
                         break;
 
                     case "3":
@@ -179,9 +191,17 @@ namespace scraper_cli
                                     case "1":
                                         myConsole.Write("Please specify file path: ");
                                         path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), myConsole.ReadLine());
-                                        ParsingRules = new List<ParsingRule>(fileService.ImportFromJson<ParsingRule[]>(path));
-                                        myConsole.Clear();
-                                        myConsole.WriteLine("===== Successfully loaded =====\n");
+                                        var list = fileService.ImportFromJson<ParsingRule[]>(path);
+                                        if (list != default(ParsingRule[]))
+                                        {
+                                            ParsingRules = new List<ParsingRule>(list);
+                                            myConsole.Clear();
+                                            myConsole.WriteLine("===== Successfully loaded =====\n");
+                                        } else
+                                        {
+                                            myConsole.Clear();
+                                            myConsole.WriteLine("===== Error occurs while loading =====\n");
+                                        }
                                         break;
                                     default:
                                         break;
