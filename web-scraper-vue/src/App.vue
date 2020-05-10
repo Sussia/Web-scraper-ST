@@ -1,24 +1,26 @@
 <template>
   <v-app>
     <v-navigation-drawer app clipped expand-on-hover mini-variant>
-      <v-list dense>
-        <v-list-item link @click="isRuleManagementSection = true">
-          <v-list-item-action>
-            <v-icon>mdi-view-dashboard</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Управление правилами</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+      <v-list dense flat>
+        <v-list-item-group color="teal" v-model="MenuSection">
+          <v-list-item @click="MenuSection = 0">
+            <v-list-item-action>
+              <v-icon>mdi-view-dashboard</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Управление правилами</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
 
-        <v-list-item link @click="isRuleManagementSection = false">
-          <v-list-item-action>
-            <v-icon>mdi-magnify</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Скрейпинг</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+          <v-list-item @click="MenuSection = 1">
+            <v-list-item-action>
+              <v-icon>mdi-magnify</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Скрейпинг</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
       </v-list>
 
     </v-navigation-drawer>
@@ -27,12 +29,19 @@
       <v-toolbar-title>Scraper</v-toolbar-title>
     </v-app-bar>
 
-    <v-content v-if="isRuleManagementSection">
+    <v-content v-if="MenuSection === 0">
       <v-container fluid>
         <v-row dense align="start">
-          <v-col v-for="rule in parsingRules" :key="rule.title" :cols="3">
+          <v-col v-for="(rule, index) in parsingRules" :key="rule.title" :cols="3">
             <v-card @click="rule.details = !rule.details">
-              <v-card-title class="teal--text text--accent-3" v-text="rule.title"></v-card-title>
+              <v-card-title class="teal--text text--accent-3">
+                <span>{{rule.title}}</span>
+                <v-spacer></v-spacer>
+                <v-btn icon @click="deleteRule(index)">
+                  <v-icon color="red" class="text--lighten-1">mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+
               <v-card-subtitle class="teal--text text--accent-2" v-text="rule.description"></v-card-subtitle>
               <v-card-text v-if="rule.details">
                 <div>Prefix: {{rule.prefix}}</div>
@@ -82,7 +91,7 @@
       </v-container>
     </v-content>
 
-    <v-content v-if="!isRuleManagementSection">
+    <v-content v-if="MenuSection === 1">
       <v-container fluid>
         <v-row>
           <v-col>
@@ -101,7 +110,7 @@
   export default {
     name: 'App',
     data: () => ({
-      isRuleManagementSection: true,
+      MenuSection: 0,
       parsingRules: [],
       isCreateRuleFormOpen: false,
       valid: false,
@@ -137,6 +146,9 @@
           details: false
         }
         this.isCreateRuleFormOpen = false
+      },
+      deleteRule(index) {
+        this.$delete(this.parsingRules, index)
       }
     }
   }
