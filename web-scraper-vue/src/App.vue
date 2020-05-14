@@ -65,11 +65,11 @@
                       <v-text-field dense v-model="newRule.description" label="Описание" outlined></v-text-field>
                     </v-col>
                     <v-col cols="12">
-                      <v-text-field dense v-model="newRule.suffix" label="Префикс"
+                      <v-text-field dense v-model="newRule.prefix" label="Префикс"
                                     required outlined :rules="textFieldRules"></v-text-field>
                     </v-col>
                     <v-col cols="12">
-                      <v-text-field dense v-model="newRule.prefix" label="Суффикс"
+                      <v-text-field dense v-model="newRule.suffix" label="Суффикс"
                                     required outlined :rules="textFieldRules"></v-text-field>
                     </v-col>
                     <v-col cols="6">
@@ -93,9 +93,19 @@
 
     <v-content v-if="MenuSection === 1">
       <v-container fluid>
+        <v-row dense align="start">
+          <v-col cols="12">
+            <v-data-table :headers="parsingRules.map(a => a.title)"></v-data-table>
+          </v-col>
+        </v-row>
         <v-row>
-          <v-col>
-            <p>Under construction</p>
+          <v-col cols="2">
+            <v-btn @click="getScrapedData">
+              Получить контент
+            </v-btn>
+          </v-col>
+          <v-col cols="10">
+            <p>{{ pageResponse }}</p>
           </v-col>
         </v-row>
       </v-container>
@@ -107,6 +117,8 @@
 </template>
 
 <script>
+  import axios from 'axios'
+
   export default {
     name: 'App',
     data: () => ({
@@ -121,7 +133,8 @@
         prefix: '',
         suffix: '',
         details: false
-      }
+      },
+      pageResponse: ''
     }),
     created () {
       this.$vuetify.theme.dark = true
@@ -149,6 +162,14 @@
       },
       deleteRule(index) {
         this.$delete(this.parsingRules, index)
+      },
+      getScrapedData() {
+        let site = "https://example.com"
+        axios.post('https://localhost:5003/extractvalues', this.parsingRules,{
+          headers: {'url-to-request': site}
+        },
+        )
+        .then(response => this.pageResponse = response.data)
       }
     }
   }
