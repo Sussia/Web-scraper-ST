@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scraper-cli", "scraper-cli\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scraper-cliTests", "scraper-cliTests\scraper-cliTests.csproj", "{89CB559D-65FC-4F4E-9120-11ECAD7E0A71}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "web-scraper-backend", "web-scraper-backend\web-scraper-backend.csproj", "{532D3837-592F-4F68-8518-CDA34BA1FF8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +21,9 @@ Global
 		{89CB559D-65FC-4F4E-9120-11ECAD7E0A71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89CB559D-65FC-4F4E-9120-11ECAD7E0A71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89CB559D-65FC-4F4E-9120-11ECAD7E0A71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{532D3837-592F-4F68-8518-CDA34BA1FF8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{532D3837-592F-4F68-8518-CDA34BA1FF8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{532D3837-592F-4F68-8518-CDA34BA1FF8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{532D3837-592F-4F68-8518-CDA34BA1FF8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
