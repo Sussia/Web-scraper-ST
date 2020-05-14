@@ -21,14 +21,14 @@ namespace web_scraper_backend.Controllers
             _logger = logger;
         }
 
-        [HttpGet("hello")]
+        [HttpGet]
         public string Get()
         {
             return "Hello, World!";
         }
 
-        [HttpGet]
-        public Dictionary<string, string> Get([FromHeader(Name ="url-to-request")]string url, List<ParsingRule> rules)
+        [HttpPost]
+        public Dictionary<string, string> Post([FromHeader(Name ="url-to-request")]string url, List<ParsingRule> rules)
         {
             return ProcessURL(url, rules);
         }
