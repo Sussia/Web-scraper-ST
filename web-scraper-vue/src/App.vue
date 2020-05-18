@@ -51,40 +51,12 @@
           </v-col>
           <v-col :cols="3">
             <v-card id="plus-card">
-                <v-btn block v-if="!isCreateRuleFormOpen" @click="isCreateRuleFormOpen = true">
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-              <v-form v-if="isCreateRuleFormOpen" v-model="valid">
-                <v-container>
-                  <v-row no-gutters>
-                    <v-col cols="12">
-                      <v-text-field dense v-model="newRule.title" label="Название"
-                                    required outlined :rules="textFieldRules"></v-text-field>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-text-field dense v-model="newRule.description" label="Описание" outlined></v-text-field>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-text-field dense v-model="newRule.prefix" label="Префикс"
-                                    required outlined :rules="textFieldRules"></v-text-field>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-text-field dense v-model="newRule.suffix" label="Суффикс"
-                                    required outlined :rules="textFieldRules"></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-btn block @click="saveNewRule" :disabled="!valid" color="success">
-                        Сохранить
-                      </v-btn>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-btn block @click="closeCreateForm">
-                        Отмена
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-form>
+              <v-btn block v-if="!isCreateRuleFormOpen" @click="isCreateRuleFormOpen = true">
+                <v-icon>mdi-plus</v-icon>
+              </v-btn>
+              <RuleForm :rule="newRule" v-if="isCreateRuleFormOpen"
+                        v-on:close-form="closeCreateForm" v-on:submit-form="saveNewRule">
+              </RuleForm>
             </v-card>
           </v-col>
         </v-row>
@@ -118,15 +90,17 @@
 
 <script>
   import axios from 'axios'
+  import RuleForm from "./components/RuleForm";
 
   export default {
     name: 'App',
+    components: {
+      RuleForm
+    },
     data: () => ({
       MenuSection: 0,
       parsingRules: [],
       isCreateRuleFormOpen: false,
-      valid: false,
-      textFieldRules: [v => !!v || 'Поле обязательно'],
       newRule: {
         title: '',
         description: '',
@@ -140,12 +114,12 @@
       this.$vuetify.theme.dark = true
     },
     methods: {
-      saveNewRule() {
+      saveNewRule(rule) {
         this.parsingRules.push({
-          title: this.newRule.title,
-          description: this.newRule.description,
-          prefix: this.newRule.prefix,
-          suffix: this.newRule.suffix,
+          title: rule.title,
+          description: rule.description,
+          prefix: rule.prefix,
+          suffix: rule.suffix,
           details: false
         })
         this.closeCreateForm()
