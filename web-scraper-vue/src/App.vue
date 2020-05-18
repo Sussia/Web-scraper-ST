@@ -33,20 +33,31 @@
       <v-container fluid>
         <v-row dense align="start">
           <v-col v-for="(rule, index) in parsingRules" :key="rule.title" :cols="3">
-            <v-card @click="rule.details = !rule.details">
-              <v-card-title class="teal--text text--accent-3">
-                <span>{{rule.title}}</span>
-                <v-spacer></v-spacer>
-                <v-btn icon @click="deleteRule(index)">
-                  <v-icon color="red" class="text--lighten-1">mdi-close</v-icon>
-                </v-btn>
-              </v-card-title>
-
-              <v-card-subtitle class="teal--text text--accent-2" v-text="rule.description"></v-card-subtitle>
-              <v-card-text v-if="rule.details">
-                <div>Prefix: {{rule.prefix}}</div>
-                <div>Suffix: {{rule.suffix}}</div>
-              </v-card-text>
+            <v-card>
+              <div v-if="!rule.isEditFormOpen">
+                <v-card-title class="teal--text text--accent-3">
+                  <span>{{rule.title}}</span>
+                  <v-spacer></v-spacer>
+                  <v-btn icon @click="rule.details = !rule.details" color="grey">
+                    <v-icon large v-if="!rule.details">mdi-chevron-down</v-icon>
+                    <v-icon large v-if="rule.details">mdi-chevron-up</v-icon>
+                  </v-btn>
+                  <v-btn icon @click="openEditForm(index, rule)">
+                    <v-icon color="orange" class="text--lighten-2">mdi-pencil</v-icon>
+                  </v-btn>
+                  <v-btn icon @click="deleteRule(index)">
+                    <v-icon color="red" class="text--lighten-1">mdi-close</v-icon>
+                  </v-btn>
+                </v-card-title>
+                <v-card-subtitle class="teal--text text--accent-2" v-text="rule.description"></v-card-subtitle>
+                <v-card-text v-if="rule.details">
+                  <div>Prefix: {{rule.prefix}}</div>
+                  <div>Suffix: {{rule.suffix}}</div>
+                </v-card-text>
+              </div>
+              <RuleForm :rule="rule" v-if="rule.isEditFormOpen"
+                        @close-form="closeEditForm(index, rule)" @submit-form="editRule(index, $event)">
+              </RuleForm>
             </v-card>
           </v-col>
           <v-col :cols="3">
@@ -55,7 +66,7 @@
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
               <RuleForm :rule="newRule" v-if="isCreateRuleFormOpen"
-                        v-on:close-form="closeCreateForm" v-on:submit-form="saveNewRule">
+                        @close-form="closeCreateForm" @submit-form="saveNewRule">
               </RuleForm>
             </v-card>
           </v-col>
@@ -106,7 +117,8 @@
         description: '',
         prefix: '',
         suffix: '',
-        details: false
+        details: false,
+        isEditFormOpen: false
       },
       pageResponse: ''
     }),
@@ -133,6 +145,17 @@
           details: false
         }
         this.isCreateRuleFormOpen = false
+      },
+      openEditForm(index, rule) {
+        rule.isEditFormOpen = true
+        this.$set(this.parsingRules, index, rule)
+      },
+      editRule(index, rule) {
+        this.closeEditForm(index, rule)
+      },
+      closeEditForm(index, rule) {
+        rule.isEditFormOpen = false
+        this.$set(this.parsingRules, index, rule)
       },
       deleteRule(index) {
         this.$delete(this.parsingRules, index)

@@ -3,22 +3,22 @@
         <v-container>
             <v-row no-gutters>
                 <v-col cols="12">
-                    <v-text-field dense v-model="rule.title" label="Название"
+                    <v-text-field dense v-model="baseRule.title" label="Название"
                                   required outlined :rules="textFieldRules"></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                    <v-text-field dense v-model="rule.description" label="Описание" outlined></v-text-field>
+                    <v-text-field dense v-model="baseRule.description" label="Описание" outlined></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                    <v-text-field dense v-model="rule.prefix" label="Префикс"
+                    <v-text-field dense v-model="baseRule.prefix" label="Префикс"
                                   required outlined :rules="textFieldRules"></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                    <v-text-field dense v-model="rule.suffix" label="Суффикс"
+                    <v-text-field dense v-model="baseRule.suffix" label="Суффикс"
                                   required outlined :rules="textFieldRules"></v-text-field>
                 </v-col>
                 <v-col cols="6">
-                    <v-btn block @click="$emit('submit-form', rule)" :disabled="!valid" color="success">
+                    <v-btn block @click="$emit('submit-form', baseRule)" :disabled="!valid" color="success">
                         Сохранить
                     </v-btn>
                 </v-col>
@@ -35,13 +35,24 @@
 <script>
     export default {
         name: "RuleForm",
-        props: [
-            'rule'
-        ],
+        props: {
+            rule: {
+                type: Object,
+                required: true
+            }
+        },
         data: function() {
             return {
                 valid: false,
-                textFieldRules: [v => !!v || 'Поле обязательно']
+                textFieldRules: [v => !!v || 'Поле обязательно'],
+                baseRule: {
+                    title: this.rule.title,
+                    description: this.rule.description,
+                    prefix: this.rule.prefix,
+                    suffix: this.rule.suffix,
+                    details: false,
+                    isEditFormOpen: true
+                }
             }
         }
     }
