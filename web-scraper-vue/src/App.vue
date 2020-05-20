@@ -90,7 +90,7 @@
         </v-row>
         <v-row justify="center">
           <v-col cols="2">
-            <v-btn @click="getScrapedData" :disabled="parsingRules.length === 0 || links.length === 0">
+            <v-btn @click="getScrapedData" :disabled="parsingRules.length === 0 || links.length === 1">
               Получить контент
             </v-btn>
           </v-col>
@@ -197,21 +197,14 @@
       getScrapedData() {
         let parsingRules = this.parsingRules
         let App = this
-        let requests = this.links.reduce(function(reqs, linkObj) {
+        this.links.forEach(function (linkObj) {
           let url = linkObj.url
           if (url !== '') {
-            reqs.push(axios.post('https://localhost:5003/extractvalues', parsingRules,{
+            axios.post('https://localhost:5003/extractvalues', parsingRules,{
               headers: {'url-to-request': url}
-            }))
+            }).then(response => App.scrapedValues.push(response.data))
           }
-          return reqs
-        }, [])
-        axios.all(requests).then(axios.spread(function (...responses) {
-            responses.map(function (resp) {
-              App.scrapedValues.push(resp.data)
-            })
-          }
-        ))
+        })
       }
     }
   }
