@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer app clipped expand-on-hover mini-variant>
       <v-list dense flat>
-        <v-list-item-group color="teal" v-model="MenuSection">
+        <v-list-item-group color="teal" mandatory>
           <v-list-item @click="MenuSection = 0">
             <v-list-item-action>
               <v-icon>mdi-view-dashboard</v-icon>
@@ -76,23 +76,33 @@
 
     <v-content v-if="MenuSection === 1">
       <v-container fluid>
-        <v-row dense align="start">
-          <v-col cols="12">
-            <v-data-table :headers="parsingRules.map(a => a.title)"></v-data-table>
+        <v-row dense v-for="(link, index) in links" :key="link.id">
+          <v-col :cols="index !== links.length - 1 ? 11 : 12">
+            <v-text-field dense solo hide-details
+                          v-model="link.url" @input.once="addLink" placeholder="Введите адрес страницы здесь">
+            </v-text-field>
+          </v-col>
+          <v-col :cols="1" v-if="index !== links.length - 1">
+            <v-btn block @click="removeLink(index)">
+              <v-icon color="red">mdi-close</v-icon>
+            </v-btn>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row justify="center">
           <v-col cols="2">
-            <v-btn @click="getScrapedData">
+            <v-btn @click="getScrapedData" :disabled="parsingRules.length === 0 || links.length === 0">
               Получить контент
             </v-btn>
           </v-col>
-          <v-col cols="10">
-            <p>{{ pageResponse }}</p>
+        </v-row>
+        <v-row dense align="start">
+          <v-col cols="12" v-if="scrapedValues.length > 0">
+            <v-data-table :headers="parsingRules.map(a => ({text: a.title, value: a.title}))" :items="scrapedValues"></v-data-table>
           </v-col>
         </v-row>
       </v-container>
     </v-content>
+
     <v-footer app>
       <span>Aleksandr Artamonov &copy; 2020</span>
     </v-footer>
@@ -110,7 +120,16 @@
     },
     data: () => ({
       MenuSection: 0,
-      parsingRules: [],
+      parsingRules: [
+        {
+          title: 'Title',
+          description: '',
+          prefix: '<title>',
+          suffix: '</title>',
+          details: false,
+          isEditFormOpen: false
+        }
+      ],
       isCreateRuleFormOpen: false,
       newRule: {
         title: '',
@@ -120,7 +139,15 @@
         details: false,
         isEditFormOpen: false
       },
-      pageResponse: ''
+      pageResponse: '',
+      scrapedValues: [],
+      linksCount: 1,
+      links: [
+        {
+          id: 1,
+          url: ''
+        }
+      ]
     }),
     created () {
       this.$vuetify.theme.dark = true
@@ -160,13 +187,31 @@
       deleteRule(index) {
         this.$delete(this.parsingRules, index)
       },
+      addLink() {
+        this.linksCount += 1
+        this.links.push({url:'', id: this.linksCount})
+      },
+      removeLink(index) {
+        this.$delete(this.links, index)
+      },
       getScrapedData() {
-        let site = "https://example.com"
-        axios.post('https://localhost:5003/extractvalues', this.parsingRules,{
-          headers: {'url-to-request': site}
-        },
-        )
-        .then(response => this.pageResponse = response.data)
+        let parsingRules = this.parsingRules
+        let App = this
+        let requests = this.links.reduce(function(reqs, linkObj) {
+          let url = linkObj.url
+          if (url !== '') {
+            reqs.push(axios.post('https://localhost:5003/extractvalues', parsingRules,{
+              headers: {'url-to-request': url}
+            }))
+          }
+          return reqs
+        }, [])
+        axios.all(requests).then(axios.spread(function (...responses) {
+            responses.map(function (resp) {
+              App.scrapedValues.push(resp.data)
+            })
+          }
+        ))
       }
     }
   }
