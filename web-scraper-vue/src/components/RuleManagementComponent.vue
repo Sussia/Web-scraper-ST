@@ -1,5 +1,14 @@
 <template>
   <v-container fluid>
+    <v-row>
+      <v-col :cols="6">
+        <v-btn block>Загрузить правила</v-btn>
+      </v-col>
+      <v-col :cols="6">
+        <FileDownload button-text="Скачать правила" :download-data="parsingRules"
+                      file-name="parsing_rules" file-type="json"></FileDownload>
+      </v-col>
+    </v-row>
     <v-row dense align="start">
       <v-col v-for="(rule, index) in parsingRules" :key="rule.title" :cols="3">
         <v-card>
@@ -45,11 +54,13 @@
 
 <script>
     import RuleForm from "./RuleForm";
+    import FileDownload from "./FileDownload";
 
     export default {
         name: "RuleManagementComponent",
         components: {
-            RuleForm
+            RuleForm,
+            FileDownload
         },
         props: {
             parsingRules: {

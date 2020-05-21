@@ -12,10 +12,24 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row justify="center">
-      <v-col cols="2">
-        <v-btn @click="getScrapedData" :disabled="parsingRules.length === 0 || links.length === 1">
+    <v-row>
+      <v-col cols="3">
+        <v-btn block>
+          Загрузить адреса страниц
+        </v-btn>
+      </v-col>
+      <v-col cols="3">
+        <v-btn @click="getScrapedData" :disabled="parsingRules.length === 0 || links.length === 1" block>
           Получить контент
+        </v-btn>
+      </v-col>
+      <v-col cols="3" v-if="scrapedValues.length !== 0">
+        <FileDownload :download-data="scrapedValues" file-name="scraped_values"
+                      file-type="csv" button-text="Скачать таблицу"></FileDownload>
+      </v-col>
+      <v-col cols="3">
+        <v-btn block v-if="scrapedValues.length !== 0">
+          Отчистить таблицу
         </v-btn>
       </v-col>
     </v-row>
@@ -30,9 +44,13 @@
 
 <script>
     import axios from "axios";
+    import FileDownload from "./FileDownload";
 
     export default {
         name: "ScrapingComponent",
+        components: {
+            FileDownload
+        },
         props: {
             parsingRules: {
                 type: Array,
