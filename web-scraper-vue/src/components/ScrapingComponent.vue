@@ -23,12 +23,12 @@
           Получить контент
         </v-btn>
       </v-col>
-      <v-col cols="3" v-if="scrapedValues.length !== 0">
+      <v-col cols="3">
         <FileDownload :download-data="scrapedValues" file-name="scraped_values"
                       file-type="csv" button-text="Скачать таблицу"></FileDownload>
       </v-col>
       <v-col cols="3">
-        <v-btn block v-if="scrapedValues.length !== 0">
+        <v-btn block :disabled="scrapedValues.length === 0" @click="clearTable">
           Отчистить таблицу
         </v-btn>
       </v-col>
@@ -68,6 +68,9 @@
             ]
         }),
         methods: {
+            clearTable() {
+                this.scrapedValues = []
+            },
             addLink() {
                 this.linksCount += 1
                 this.links.push({url: '', id: this.linksCount})

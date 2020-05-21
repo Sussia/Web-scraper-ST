@@ -33,7 +33,11 @@
         computed: {
             _dataTitles() {
                 if(this.dataTitles === undefined) {
-                    return Object.keys(this.downloadData[0])
+                    if (this.downloadData.length === 0) {
+                        return []
+                    } else {
+                        return Object.keys(this.downloadData[0])
+                    }
                 } else {
                     return this.dataTitles
                 }
