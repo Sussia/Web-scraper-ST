@@ -1,34 +1,16 @@
 <template>
   <v-app>
-    <v-navigation-drawer app clipped expand-on-hover mini-variant>
-      <v-list dense flat>
-        <v-list-item-group color="teal" mandatory>
-
-          <v-list-item @click="MenuSection = 0">
-            <v-list-item-action>
-              <v-icon>mdi-view-dashboard</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Управление правилами</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item @click="MenuSection = 1">
-            <v-list-item-action>
-              <v-icon>mdi-magnify</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Скрейпинг</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-        </v-list-item-group>
-      </v-list>
-
-    </v-navigation-drawer>
-
-    <v-app-bar app clipped-left>
-      <v-toolbar-title>Scraper</v-toolbar-title>
+    <v-app-bar app>
+      <v-tabs color="teal" centered>
+        <v-tab @click="MenuSection = 0">
+          <v-icon>mdi-view-dashboard</v-icon>
+          Управление правилами
+        </v-tab>
+        <v-tab @click="MenuSection = 1">
+          <v-icon>mdi-magnify</v-icon>
+          Скрейпинг
+        </v-tab>
+      </v-tabs>
     </v-app-bar>
 
     <v-content v-if="MenuSection === 0">
