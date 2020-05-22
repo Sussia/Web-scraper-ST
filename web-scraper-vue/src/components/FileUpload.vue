@@ -1,7 +1,7 @@
 <template>
   <div>
     <input type="file" accept=".json" @change="loadTextFromFile" ref="file" hidden>
-    <v-btn block @click="$refs.file.click()">
+    <v-btn block @click="$refs.file.click()" min-width="200px">
       {{ buttonText }}
     </v-btn>
   </div>

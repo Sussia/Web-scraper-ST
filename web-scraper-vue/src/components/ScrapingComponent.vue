@@ -6,29 +6,27 @@
                       v-model="link.url" @input.once="addLink" placeholder="Введите адрес страницы здесь">
         </v-text-field>
       </v-col>
-      <v-col :cols="1" v-if="index !== links.length - 1">
-        <v-btn block @click="removeLink(index)">
+      <v-col cols="1" v-if="index !== links.length - 1">
+        <v-btn @click="removeLink(index)" block>
           <v-icon color="red">mdi-close</v-icon>
         </v-btn>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="3">
-        <FileUpload button-text="Загрузить адреса страниц" @loaded="importLinks" block>
-
-        </FileUpload>
+      <v-col>
+        <FileUpload button-text="Загрузить адреса" @loaded="importLinks"></FileUpload>
       </v-col>
-      <v-col cols="3">
-        <v-btn @click="getScrapedData" :disabled="parsingRules.length === 0 || links.length === 1" block>
+      <v-col>
+        <v-btn block @click="getScrapedData" :disabled="parsingRules.length === 0 || links.length === 1" min-width="200px">
           Получить контент
         </v-btn>
       </v-col>
-      <v-col cols="3">
+      <v-col>
         <FileDownload :download-data="scrapedValues" file-name="scraped_values"
                       file-type="csv" button-text="Скачать таблицу"></FileDownload>
       </v-col>
-      <v-col cols="3">
-        <v-btn block :disabled="scrapedValues.length === 0" @click="clearTable">
+      <v-col>
+        <v-btn block :disabled="scrapedValues.length === 0" @click="clearTable" min-width="200px">
           Отчистить таблицу
         </v-btn>
       </v-col>

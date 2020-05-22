@@ -10,8 +10,8 @@
       </v-col>
     </v-row>
     <v-row dense align="start">
-      <v-col v-for="(rule, index) in parsingRules" :key="rule.title" :cols="3">
-        <v-card>
+      <v-col v-for="(rule, index) in parsingRules" :key="rule.title">
+        <v-card min-width="200px">
           <div v-if="!rule.isEditFormOpen">
             <v-card-title class="teal--text text--accent-3">
               <span>{{rule.title}}</span>
@@ -38,8 +38,8 @@
           </RuleForm>
         </v-card>
       </v-col>
-      <v-col :cols="3">
-        <v-card id="plus-card">
+      <v-col>
+        <v-card id="plus-card" min-width="300px">
           <v-btn block v-if="!isCreateRuleFormOpen" @click="isCreateRuleFormOpen = true">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
