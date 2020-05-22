@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col :cols="6">
-        <v-btn block>Загрузить правила</v-btn>
+        <FileUpload button-text="Загрузить правила" @loaded="importRules"></FileUpload>
       </v-col>
       <v-col :cols="6">
         <FileDownload button-text="Скачать правила" :download-data="parsingRules"
@@ -55,12 +55,14 @@
 <script>
     import RuleForm from "./RuleForm";
     import FileDownload from "./FileDownload";
+    import FileUpload from "./FileUpload";
 
     export default {
         name: "RuleManagementComponent",
         components: {
             RuleForm,
-            FileDownload
+            FileDownload,
+            FileUpload
         },
         props: {
             parsingRules: {
@@ -115,6 +117,9 @@
             deleteRule(index) {
                 this.$delete(this.parsingRules, index)
             },
+            importRules(rules) {
+                this.parsingRules.push(...JSON.parse(rules))
+            }
         }
     }
 </script>

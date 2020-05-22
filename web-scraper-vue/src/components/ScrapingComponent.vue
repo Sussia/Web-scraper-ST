@@ -14,9 +14,9 @@
     </v-row>
     <v-row>
       <v-col cols="3">
-        <v-btn block>
-          Загрузить адреса страниц
-        </v-btn>
+        <FileUpload button-text="Загрузить адреса страниц" @loaded="importLinks" block>
+
+        </FileUpload>
       </v-col>
       <v-col cols="3">
         <v-btn @click="getScrapedData" :disabled="parsingRules.length === 0 || links.length === 1" block>
@@ -45,11 +45,13 @@
 <script>
     import axios from "axios";
     import FileDownload from "./FileDownload";
+    import FileUpload from "./FileUpload";
 
     export default {
         name: "ScrapingComponent",
         components: {
-            FileDownload
+            FileDownload,
+            FileUpload
         },
         props: {
             parsingRules: {
@@ -70,6 +72,21 @@
         methods: {
             clearTable() {
                 this.scrapedValues = []
+            },
+            importLinks(text) {
+                let links = JSON.parse(text)
+                let counter = 0;
+                let l = links.map(link => {
+                    counter += 1
+                    return {
+                        url: link,
+                        id: counter
+                    }
+                })
+                this.links = []
+                this.links.push(...l)
+                this.linksCount = counter
+                this.addLink()
             },
             addLink() {
                 this.linksCount += 1
