@@ -1,7 +1,7 @@
 <template>
   <v-btn block :disabled="downloadData.length === 0"
      :href="convertData"
-     :download="`${fileName}.${fileType}`" min-width="200px">
+     :download="`${fileName}.${fileType}`" min-width="200px" class="download-button">
     {{ ButtonText }}
   </v-btn>
 </template>

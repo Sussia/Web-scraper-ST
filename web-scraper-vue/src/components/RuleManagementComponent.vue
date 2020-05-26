@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid id="rule-management-component">
     <v-row>
       <v-col :cols="6">
         <FileUpload button-text="Загрузить правила" @loaded="importRules"></FileUpload>
@@ -11,19 +11,19 @@
     </v-row>
     <v-row dense align="start">
       <v-col v-for="(rule, index) in parsingRules" :key="rule.title">
-        <v-card min-width="200px">
+        <v-card min-width="200px" class="rule-card">
           <div v-if="!rule.isEditFormOpen">
             <v-card-title class="teal--text text--accent-3">
               <span>{{rule.title}}</span>
               <v-spacer></v-spacer>
-              <v-btn icon @click="rule.details = !rule.details" color="grey">
+              <v-btn icon @click="rule.details = !rule.details" color="grey" class="expand-button">
                 <v-icon large v-if="!rule.details">mdi-chevron-down</v-icon>
                 <v-icon large v-if="rule.details">mdi-chevron-up</v-icon>
               </v-btn>
-              <v-btn icon @click="openEditForm(index, rule)">
+              <v-btn icon @click="openEditForm(index, rule)" class="edit-button">
                 <v-icon color="orange" class="text--lighten-2">mdi-pencil</v-icon>
               </v-btn>
-              <v-btn icon @click="deleteRule(index)">
+              <v-btn icon @click="deleteRule(index)" class="delete-button">
                 <v-icon color="red" class="text--lighten-1">mdi-close</v-icon>
               </v-btn>
             </v-card-title>

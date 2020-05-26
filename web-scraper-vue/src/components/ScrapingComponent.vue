@@ -1,32 +1,32 @@
 <template>
-  <v-container fluid>
+  <v-container fluid id="rule-management-component">
     <v-row dense v-for="(link, index) in links" :key="link.id">
       <v-col :cols="index !== links.length - 1 ? 11 : 12">
-        <v-text-field dense filled hide-details
+        <v-text-field dense filled hide-details class="url-field"
                       v-model="link.url" @input.once="addLink" placeholder="Введите адрес страницы здесь">
         </v-text-field>
       </v-col>
       <v-col cols="1" v-if="index !== links.length - 1">
-        <v-btn @click="removeLink(index)" block>
+        <v-btn @click="removeLink(index)" block class="remove-url-button">
           <v-icon color="red">mdi-close</v-icon>
         </v-btn>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <FileUpload button-text="Загрузить адреса" @loaded="importLinks"></FileUpload>
+        <FileUpload id="upload-urls-button" button-text="Загрузить адреса" @loaded="importLinks"></FileUpload>
       </v-col>
       <v-col>
-        <v-btn block @click="getScrapedData" :disabled="parsingRules.length === 0 || links.length === 1" min-width="200px">
+        <v-btn block @click="getScrapedData" :disabled="parsingRules.length === 0 || links.length === 1" min-width="200px" id="scrape-button">
           Получить контент
         </v-btn>
       </v-col>
       <v-col>
-        <FileDownload :download-data="scrapedValues" file-name="scraped_values"
+        <FileDownload id="download-table-button" :download-data="scrapedValues" file-name="scraped_values"
                       file-type="csv" button-text="Скачать таблицу"></FileDownload>
       </v-col>
       <v-col>
-        <v-btn block :disabled="scrapedValues.length === 0" @click="clearTable" min-width="200px">
+        <v-btn block :disabled="scrapedValues.length === 0" @click="clearTable" min-width="200px" id="clear-table-button">
           Отчистить таблицу
         </v-btn>
       </v-col>
@@ -34,7 +34,7 @@
     <v-row dense align="start">
       <v-col cols="12" v-if="scrapedValues.length > 0">
         <v-data-table :headers="parsingRules.map(a => ({text: a.title, value: a.title}))"
-                      :items="scrapedValues"></v-data-table>
+                      :items="scrapedValues" id="data-table"></v-data-table>
       </v-col>
     </v-row>
   </v-container>

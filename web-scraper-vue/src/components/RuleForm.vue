@@ -4,26 +4,26 @@
       <v-row no-gutters>
         <v-col cols="12">
           <v-text-field dense v-model="baseRule.title" label="Название"
+                        required outlined :rules="textFieldRules" class="title-field"></v-text-field>
+        </v-col>
+        <v-col cols="12">
+          <v-text-field dense v-model="baseRule.description" label="Описание" outlined class="description-field"></v-text-field>
+        </v-col>
+        <v-col cols="12">
+          <v-text-field dense v-model="baseRule.prefix" label="Префикс" class="prefix-field"
                         required outlined :rules="textFieldRules"></v-text-field>
         </v-col>
         <v-col cols="12">
-          <v-text-field dense v-model="baseRule.description" label="Описание" outlined></v-text-field>
-        </v-col>
-        <v-col cols="12">
-          <v-text-field dense v-model="baseRule.prefix" label="Префикс"
-                        required outlined :rules="textFieldRules"></v-text-field>
-        </v-col>
-        <v-col cols="12">
-          <v-text-field dense v-model="baseRule.suffix" label="Суффикс"
+          <v-text-field dense v-model="baseRule.suffix" label="Суффикс" class="suffix-field"
                         required outlined :rules="textFieldRules"></v-text-field>
         </v-col>
         <v-col cols="6">
-          <v-btn block @click="$emit('submit-form', baseRule)" :disabled="!valid" color="success">
+          <v-btn block @click="$emit('submit-form', baseRule)" :disabled="!valid" color="success" class="save-button">
             Сохранить
           </v-btn>
         </v-col>
         <v-col cols="6">
-          <v-btn block @click="$emit('close-form')">
+          <v-btn block @click="$emit('close-form')" class="cancel-button">
             Отмена
           </v-btn>
         </v-col>
