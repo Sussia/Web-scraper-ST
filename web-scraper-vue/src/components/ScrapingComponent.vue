@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid name="asd">
     <v-row dense v-for="(link, index) in links" :key="link.id">
       <v-col :cols="index !== links.length - 1 ? 11 : 12">
         <v-text-field dense filled hide-details
@@ -27,7 +27,7 @@
       </v-col>
       <v-col>
         <v-btn block :disabled="scrapedValues.length === 0" @click="clearTable" min-width="200px">
-          Отчистить таблицу
+          Очистить таблицу
         </v-btn>
       </v-col>
     </v-row>

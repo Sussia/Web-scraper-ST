@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid name="asd">
     <v-row>
       <v-col :cols="6">
         <FileUpload button-text="Загрузить правила" @loaded="importRules"></FileUpload>
