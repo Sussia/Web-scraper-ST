@@ -17,7 +17,7 @@ namespace web_scraper_vue_tests
         }
         
         [Test]
-        public void RuleCreationTest()
+        public void RuleControlsTest()
         {
             var cards = driver.FindElements(By.CssSelector("div.rule-card"));
             Assert.AreEqual(1, cards.Count);
@@ -28,11 +28,13 @@ namespace web_scraper_vue_tests
             RuleForm creationForm = new RuleForm(driver.FindElement(By.CssSelector("#plus-card > form")));
 
             string testTitle = "Test title";
+            string prefix = "<prefix>";
+            string suffix = "<suffix>";
 
             creationForm.title.SendKeys(testTitle);
             creationForm.description.SendKeys("Some description");
-            creationForm.perfix.SendKeys("prefix");
-            creationForm.suffix.SendKeys("suffix");
+            creationForm.perfix.SendKeys(prefix);
+            creationForm.suffix.SendKeys(suffix);
 
             var saveButton = creationForm.saveButton;
 
@@ -46,6 +48,24 @@ namespace web_scraper_vue_tests
             var newCard = new RuleCard(cards[1]);
 
             Assert.AreEqual(testTitle, newCard.title);
+
+            newCard.expandButton.SendKeys(Keys.Enter);
+            Assert.AreEqual($"Prefix: {prefix}Suffix: {suffix}", newCard.text);
+            newCard.expandButton.SendKeys(Keys.Enter);
+
+            newCard.editButton.SendKeys(Keys.Enter);
+            var editForm = newCard.editForm;
+            string newTitle = "New test title";
+            editForm.title.SendKeys(Keys.Command + "a");
+            editForm.title.SendKeys(Keys.Backspace);
+            editForm.title.SendKeys(newTitle);
+            editForm.saveButton.SendKeys(Keys.Enter);
+            newCard = new RuleCard(driver.FindElements(By.CssSelector("div.rule-card"))[1]);
+            Assert.AreEqual(newTitle, newCard.title);
+
+            newCard.deleteButton.SendKeys(Keys.Enter);
+            cards = driver.FindElements(By.CssSelector("div.rule-card"));
+            Assert.AreEqual(1, cards.Count);
 
         }
 
