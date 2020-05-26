@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text.Json;
 using System.Threading;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -48,6 +50,39 @@ namespace web_scraper_vue_tests
             urlContainers = driver.FindElements(By.CssSelector("div.url-field"));
             Assert.AreEqual(2, urlContainers.Count);
             Assert.AreEqual(secondUrl, urlContainers[0].FindElement(By.CssSelector("input")).GetAttribute("value"));
+        }
+
+        [Test]
+        public void ScrapingTest()
+        {
+            var links = new string[] { "https://example.com" };
+            string path = Path.Combine(homeDirectory, "Desktop/test.json");
+            File.WriteAllText(path, JsonSerializer.Serialize(links));
+            var fileInput = driver.FindElement(By.CssSelector("input[type=\"file\"]"));
+            fileInput.SendKeys(path);
+
+            driver.FindElement(By.CssSelector("#scrape-button")).SendKeys(Keys.Enter);
+            Thread.Sleep(5000);
+
+            var dataTable = driver.FindElement(By.CssSelector("#data-table"));
+
+            var rows = dataTable.FindElements(By.CssSelector("td"));
+            Assert.AreEqual(1, rows.Count);
+            Assert.AreEqual("Example Domain", rows[0].Text);
+
+            var downloadButton = driver.FindElement(By.CssSelector("a.download-button"));
+            downloadButton.SendKeys(Keys.Enter);
+            Thread.Sleep(2000);
+            string tablePath = Path.Combine(homeDirectory, "Downloads/scraped_values.csv");
+            Assert.AreEqual(true, File.Exists(tablePath));
+
+            driver.FindElement(By.CssSelector("#clear-table-button")).SendKeys(Keys.Enter);
+            var dataTables = driver.FindElements(By.CssSelector("#data-table"));
+            Assert.AreEqual(0, dataTables.Count);
+
+            File.Delete(path);
+            File.Delete(tablePath);
+
         }
 
         [TearDown]
