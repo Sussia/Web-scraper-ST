@@ -43,8 +43,9 @@ namespace web_scraper_vue_tests
             cards = driver.FindElements(By.CssSelector("div.rule-card"));
             Assert.AreEqual(2, cards.Count);
 
-            var secondCardTitle = cards[1].FindElement(By.CssSelector("div.v-card__title > span"));
-            Assert.AreEqual(testTitle, secondCardTitle.Text);
+            var newCard = new RuleCard(cards[1]);
+
+            Assert.AreEqual(testTitle, newCard.title);
 
         }
 
