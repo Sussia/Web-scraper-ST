@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Text.Json;
+using System.Threading;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Safari;
@@ -76,16 +78,38 @@ namespace web_scraper_vue_tests
         public void UploadRuleTest()
         {
             string testTitle = "Test rule";
+            var rules = new ParsingRule[]
+            {
+                new ParsingRule {
+                    title = testTitle,
+                    prefix = "<test>",
+                    suffix = "</test>"
+                }
+            };
             string path = Path.Combine(homeDirectory, "Desktop/test.json");
-            File.WriteAllText(path, $"[{{\"title\": \"{testTitle}\",\"description\": \"\",\"prefix\": \"<test>\",\"suffix\": \"</test>\",\"details\": false,\"isEditFormOpen\": false}}]");
-            var uploadButton = driver.FindElement(By.CssSelector("input[type=\"file\"]"));
-            uploadButton.SendKeys(path);
+            File.WriteAllText(path, JsonSerializer.Serialize(rules));
+            var fileInput = driver.FindElement(By.CssSelector("input[type=\"file\"]"));
+            fileInput.SendKeys(path);
 
             var cards = driver.FindElements(By.CssSelector("div.rule-card"));
             Assert.AreEqual(2, cards.Count);
 
             var newCard = new RuleCard(cards[1]);
             Assert.AreEqual(testTitle, newCard.title);
+
+            File.Delete(path);
+        }
+
+        [Test]
+        public void DownloadRuleTest()
+        {
+            var downloadButton = driver.FindElement(By.CssSelector("a.download-button"));
+            downloadButton.SendKeys(Keys.Enter);
+            Thread.Sleep(2000);
+            string path = Path.Combine(homeDirectory, "Downloads/parsing_rules.json");
+            var rules = JsonSerializer.Deserialize<ParsingRule[]>(File.ReadAllText(path));
+
+            Assert.AreEqual("Title", rules[0].title);
 
             File.Delete(path);
         }
