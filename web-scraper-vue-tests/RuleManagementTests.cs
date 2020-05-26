@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Safari;
@@ -7,6 +9,7 @@ namespace web_scraper_vue_tests
     public class RuleManagementTests
     {
         IWebDriver driver;
+        private static string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
         [SetUp]
         public void Setup()
@@ -67,6 +70,24 @@ namespace web_scraper_vue_tests
             cards = driver.FindElements(By.CssSelector("div.rule-card"));
             Assert.AreEqual(1, cards.Count);
 
+        }
+
+        [Test]
+        public void UploadRuleTest()
+        {
+            string testTitle = "Test rule";
+            string path = Path.Combine(homeDirectory, "Desktop/test.json");
+            File.WriteAllText(path, $"[{{\"title\": \"{testTitle}\",\"description\": \"\",\"prefix\": \"<test>\",\"suffix\": \"</test>\",\"details\": false,\"isEditFormOpen\": false}}]");
+            var uploadButton = driver.FindElement(By.CssSelector("input[type=\"file\"]"));
+            uploadButton.SendKeys(path);
+
+            var cards = driver.FindElements(By.CssSelector("div.rule-card"));
+            Assert.AreEqual(2, cards.Count);
+
+            var newCard = new RuleCard(cards[1]);
+            Assert.AreEqual(testTitle, newCard.title);
+
+            File.Delete(path);
         }
 
         [TearDown]
