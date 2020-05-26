@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid id="rule-management-component">
+  <v-container fluid id="scraping-component">
     <v-row dense v-for="(link, index) in links" :key="link.id">
       <v-col :cols="index !== links.length - 1 ? 11 : 12">
         <v-text-field dense filled hide-details class="url-field"
